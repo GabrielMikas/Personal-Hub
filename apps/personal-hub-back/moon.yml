@@ -12,4 +12,4 @@ tasks:
     outputs:
       - 'build'
   dev:
-    command:  'go run'  
+    command:  'go run src/main.go'  

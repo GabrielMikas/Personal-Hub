@@ -1,0 +1,10 @@
+{
+  "name": "personal-hub",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "back-dev":"moon run personal-hub-back:dev",
+    "front-dev":"moon run personal-hub-front:dev",
+    "mq-dev":"moon run mikas-mq:dev"
+  }
+}
