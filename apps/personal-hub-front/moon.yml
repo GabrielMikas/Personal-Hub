@@ -1,0 +1,10 @@
+project:
+  name: 'PersonalHub Front'
+  description: 'PersonalHub frontend application'
+tasks:
+  build:
+    command: 'vite dev'
+    inputs:
+      - 'src/**/*'
+    outputs:
+      - 'dist'

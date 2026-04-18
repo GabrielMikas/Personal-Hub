@@ -1,0 +1,15 @@
+project:
+  name: 'PersonalHub Back'
+  description: 'Backend for personal hub management'
+
+language: go
+
+tasks:
+  build:
+    command: 'go build -o build'
+    inputs:
+      - 'src/**/*'
+    outputs:
+      - 'build'
+  dev:
+    command:  'go run'  
