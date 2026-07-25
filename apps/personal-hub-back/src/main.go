@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/personalhub/personalhub-back/src/services/brapi"
 
 func main() {
-	fmt.Println("Hello back")
+	brapi.BrapiService()
 }
