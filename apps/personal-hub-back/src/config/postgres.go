@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/personalhub/personalhub-back/schemas"
+	hobbies_schemas "github.com/personalhub/personalhub-back/src/schemas/hobbies"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -27,7 +27,15 @@ func initializePostgres() (*gorm.DB, error) {
 		fmt.Println("Error opening database:", err)
 	}
 
-	err = db.AutoMigrate(&schemas.Investment{})
+	err = db.AutoMigrate(&hobbies_schemas.Order{})
+	if err != nil {
+		fmt.Println("Error running migration:", err)
+	}
+	err = db.AutoMigrate(&hobbies_schemas.Card{})
+	if err != nil {
+		fmt.Println("Error running migration:", err)
+	}
+	err = db.AutoMigrate(&hobbies_schemas.Reimbursement{})
 	if err != nil {
 		fmt.Println("Error running migration:", err)
 	}

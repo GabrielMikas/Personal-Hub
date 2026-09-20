@@ -1,7 +1,16 @@
 package main
 
-import "github.com/personalhub/personalhub-back/src/services/brapi"
+import (
+	"log"
+
+	"github.com/personalhub/personalhub-back/src/config"
+	"github.com/personalhub/personalhub-back/src/router"
+)
 
 func main() {
-	brapi.BrapiService()
+	if err := config.Init(); err != nil {
+		log.Fatalf("failed to initialize config: %v", err)
+	}
+
+	router.Run()
 }
