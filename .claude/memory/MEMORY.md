@@ -17,11 +17,12 @@ Contexto que deve sobreviver entre sessões do Claude. Lido no início de toda s
 - 2026-11-26 — Backend deve ter ≥ 90% de cobertura de testes.
 - 2026-11-26 — Frontend será um app desktop Electron + React + Vite + TypeScript.
 - 2026-11-26 — Testes do backend usam SQLite em memória (`src/internal/testdb`, driver puro Go, sem CGO/Docker); falhas de escrita são simuladas com `testdb.FailWrites`.
+- 2026-11-27 — Repositório tornado público. `main` protegida: exige o check `Backend tests and coverage` (workflow `.github/workflows/backend.yml`) com branch atualizada, vale também para admins, sem force push nem deleção. Sem exigência de review.
 - 2026-11-26 — Token da brapi fica em `apps/personal-hub-back/.env` (`BRAPI_KEY`), nunca no código.
 
 ## Pendências
 
-- Gerar um novo token da brapi: o antigo vazou no histórico do git. O histórico da `main` foi reescrito em 2026-11-26, mas o GitHub ainda guarda uma cópia nos refs do PR #1 (repo privado).
+- Gerar um novo token da brapi: o antigo vazou no histórico do git. O histórico da `main` foi reescrito em 2026-11-26, mas o GitHub ainda guarda uma cópia nos refs do PR #1 — e desde 2026-11-27 o repo é público, então o token antigo está exposto publicamente. Revogar com urgência.
 - Bug do driver `glebarez/sqlite`: `Migrator().HasTable` não enxerga tabelas em schemas anexados (`hobbies.*`), então re-migrar o SQLite de teste falha. No Postgres não acontece.
 - Respostas da API saem em PascalCase (schemas GORM sem tags `json`), enquanto requests usam camelCase. Avaliar padronizar em camelCase.
 - Rotas `/finance/investments/*` estão registradas em `routes.go` sem handlers (ainda não implementadas).
