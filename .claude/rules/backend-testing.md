@@ -8,6 +8,10 @@ O backend Go (`apps/personal-hub-back`) **deve** manter cobertura total de teste
 - Um PR não pode reduzir a cobertura total abaixo de 90%. Se a cobertura atual já estiver abaixo da meta, o PR não pode reduzi-la ainda mais e deve, sempre que possível, aumentá-la.
 - Antes de concluir qualquer tarefa no backend, rode os testes e verifique a cobertura (comandos abaixo). Reporte o valor obtido.
 
+## CI
+
+O workflow `.github/workflows/backend.yml` roda em todo PR para a `main` (e em push na `main`): `gofmt`, `go vet`, `go build`, testes e cobertura mínima de 90%. O job **Backend tests and coverage** é um status check obrigatório para mergear na `main`; não renomeie o job sem atualizar a proteção da branch.
+
 ## Comandos
 
 Na pasta `apps/personal-hub-back`:
