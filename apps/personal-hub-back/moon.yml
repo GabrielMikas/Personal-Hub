@@ -12,4 +12,8 @@ tasks:
     outputs:
       - 'build'
   dev:
-    command:  'go run src/main.go'  
+    command:  'go run src/main.go'
+  test:
+    command: 'go test ./... -coverprofile=coverage.out -covermode=atomic'
+    inputs:
+      - 'src/**/*'  

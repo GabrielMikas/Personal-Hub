@@ -3,6 +3,9 @@
 .moon/cache
 .moon/docker
 
+# go test coverage
+coverage.out
+
 # environment variables
 .env
 .env.*
