@@ -1,0 +1,62 @@
+name: Backend
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # Required status check on main: keep this name stable.
+    name: Backend tests and coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/personal-hub-back
+    env:
+      MIN_COVERAGE: "90.0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          # Uses the toolchain directive (go1.25.14) from go.mod.
+          go-version-file: apps/personal-hub-back/go.mod
+          cache-dependency-path: apps/personal-hub-back/go.sum
+
+      - name: Check formatting
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error::Files not formatted with gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test ./... -coverprofile=coverage.out -covermode=atomic
+
+      - name: Enforce minimum coverage
+        run: |
+          go tool cover -func=coverage.out | tee coverage.txt
+          total=$(awk '/^total:/ { sub("%", "", $NF); print $NF }' coverage.txt)
+          echo "## Backend coverage: ${total}% (minimum ${MIN_COVERAGE}%)" >> "$GITHUB_STEP_SUMMARY"
+          if awk -v t="$total" -v m="$MIN_COVERAGE" 'BEGIN { exit !(t < m) }'; then
+            echo "::error::Coverage ${total}% is below the minimum of ${MIN_COVERAGE}%"
+            exit 1
+          fi
+          echo "Coverage ${total}% meets the minimum of ${MIN_COVERAGE}%"
