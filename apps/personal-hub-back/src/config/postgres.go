@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -11,33 +12,35 @@ import (
 )
 
 func initializePostgres() (*gorm.DB, error) {
-
-	err := godotenv.Load()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
+		// Not fatal: variables may come from the real environment.
 		fmt.Println("Error loading environment variables:", err)
 	}
 
 	dsn := os.Getenv("DB_DSN")
 	if dsn == "" {
-		fmt.Println("Error: DB_DSN not set in .env")
+		return nil, errors.New("DB_DSN not set")
 	}
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Println("Error opening database:", err)
+		return nil, fmt.Errorf("opening database: %w", err)
 	}
 
-	err = db.AutoMigrate(&hobbies_schemas.Order{})
-	if err != nil {
-		fmt.Println("Error running migration:", err)
+	if err := Migrate(conn); err != nil {
+		return nil, err
 	}
-	err = db.AutoMigrate(&hobbies_schemas.Card{})
-	if err != nil {
-		fmt.Println("Error running migration:", err)
+	return conn, nil
+}
+
+// Migrate creates or updates every table the application uses.
+func Migrate(conn *gorm.DB) error {
+	if err := conn.AutoMigrate(
+		&hobbies_schemas.Order{},
+		&hobbies_schemas.Card{},
+		&hobbies_schemas.Reimbursement{},
+	); err != nil {
+		return fmt.Errorf("running migrations: %w", err)
 	}
-	err = db.AutoMigrate(&hobbies_schemas.Reimbursement{})
-	if err != nil {
-		fmt.Println("Error running migration:", err)
-	}
-	return db, nil
+	return nil
 }
