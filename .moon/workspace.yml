@@ -2,7 +2,6 @@
 projects: 
   personal-hub-back: 'apps/personal-hub-back'
   personal-hub-front: 'apps/personal-hub-front'
-  mikas-mq: 'apps/mikas-mq'
 
 
 vcs:
