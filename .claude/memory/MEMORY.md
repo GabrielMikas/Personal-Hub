@@ -22,7 +22,6 @@ Contexto que deve sobreviver entre sessões do Claude. Lido no início de toda s
 
 ## Pendências
 
-- Token da brapi rotacionado em 2026-11-27 (novo valor só no `.env`). O antigo continua visível nos refs do PR #1, agora que o repo é público: confirmar que ele foi revogado no painel da brapi.
 - Bug do driver `glebarez/sqlite`: `Migrator().HasTable` não enxerga tabelas em schemas anexados (`hobbies.*`), então re-migrar o SQLite de teste falha. No Postgres não acontece.
 - Respostas da API saem em PascalCase (schemas GORM sem tags `json`), enquanto requests usam camelCase. Avaliar padronizar em camelCase.
 - Rotas `/finance/investments/*` estão registradas em `routes.go` sem handlers (ainda não implementadas).
@@ -37,3 +36,4 @@ Contexto que deve sobreviver entre sessões do Claude. Lido no início de toda s
 
 - 2026-11-26 — Criados os subagentes `go-backend-developer` e `react-electron-frontend-developer`. Token da brapi movido para o `.env`. PR #1 (APIs de hobbies) mergeado. Histórico da `main` reescrito para remover o token; branches `feature/*` apagadas, incluindo `feature/mikas-mq` (trabalho descartado). Criados `CLAUDE.md`, regras, README e `openapi.yaml` na branch `chore/repo-improvements`.
 - 2026-11-26 — Branch `test/back-coverage`: cobertura do backend de 0% para 96,0%. `config.Init` passou a retornar erros; `brapi` virou um `Client` injetável (`GetQuote`); `router.New()` separado de `Run()`; toolchain fixado em `go1.25.14` (o 1.25.0 não tem `covdata`).
+- 2026-11-27 — Repo tornado público e `main` protegida com o check de CI do backend (PR #4). Token da brapi rotacionado e o antigo (vazado nos refs do PR #1) revogado.
