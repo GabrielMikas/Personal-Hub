@@ -58,5 +58,7 @@ Dependências fluem só para baixo: controller → command → repository → sc
 - Código idiomático: erros retornados (não `panic`), `errors.Is`/`errors.As`, sem variáveis globais novas além do que já existe em `config`.
 - Não adicione dependências novas sem necessidade clara; se adicionar, rode `go mod tidy` e justifique.
 - Não altere comportamento de endpoints existentes sem que seja pedido.
-- Se escrever testes, use `testing` padrão com table-driven tests e `httptest` para controllers.
-- Ao terminar, reporte de forma objetiva: arquivos criados/alterados, rotas novas e o resultado de `go build`/`go vet`.
+- Testes são obrigatórios: cobertura total ≥ 90%, conforme `.claude/rules/backend-testing.md`. Use o pacote `testing` com table-driven tests e `httptest` nos controllers.
+- Siga as regras de `.claude/rules/` (commits e branches em Conventional Commits) e consulte `.claude/memory/MEMORY.md` para ver o contexto e as pendências.
+- Toda mudança de rota, request ou response deve atualizar `apps/personal-hub-back/openapi.yaml`.
+- Ao terminar, reporte de forma objetiva: arquivos criados/alterados, rotas novas e o resultado de `go build`/`go vet`/`go test` (com a cobertura).
