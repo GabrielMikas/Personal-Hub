@@ -22,7 +22,7 @@ Contexto que deve sobreviver entre sessões do Claude. Lido no início de toda s
 
 ## Pendências
 
-- Gerar um novo token da brapi: o antigo vazou no histórico do git. O histórico da `main` foi reescrito em 2026-11-26, mas o GitHub ainda guarda uma cópia nos refs do PR #1 — e desde 2026-11-27 o repo é público, então o token antigo está exposto publicamente. Revogar com urgência.
+- Token da brapi rotacionado em 2026-11-27 (novo valor só no `.env`). O antigo continua visível nos refs do PR #1, agora que o repo é público: confirmar que ele foi revogado no painel da brapi.
 - Bug do driver `glebarez/sqlite`: `Migrator().HasTable` não enxerga tabelas em schemas anexados (`hobbies.*`), então re-migrar o SQLite de teste falha. No Postgres não acontece.
 - Respostas da API saem em PascalCase (schemas GORM sem tags `json`), enquanto requests usam camelCase. Avaliar padronizar em camelCase.
 - Rotas `/finance/investments/*` estão registradas em `routes.go` sem handlers (ainda não implementadas).
