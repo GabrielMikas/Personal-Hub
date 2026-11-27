@@ -22,3 +22,9 @@ func Init() error {
 func GetDB() *gorm.DB {
 	return db
 }
+
+// SetDB replaces the global database connection. It exists so tests can
+// inject an isolated database instead of the development/production one.
+func SetDB(conn *gorm.DB) {
+	db = conn
+}
