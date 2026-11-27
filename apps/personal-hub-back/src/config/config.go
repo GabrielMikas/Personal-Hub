@@ -11,11 +11,11 @@ var (
 )
 
 func Init() error {
-	var err error
-	db, err = initializePostgres()
+	conn, err := initializePostgres()
 	if err != nil {
-		return fmt.Errorf("error initializing postgres")
+		return fmt.Errorf("error initializing postgres: %w", err)
 	}
+	db = conn
 	return nil
 }
 
