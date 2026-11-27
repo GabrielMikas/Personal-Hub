@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/personalhub/personalhub-back/src/config"
+	"github.com/personalhub/personalhub-back/src/router"
+)
 
 func main() {
-	fmt.Println("Hello back")
+	if err := config.Init(); err != nil {
+		log.Fatalf("failed to initialize config: %v", err)
+	}
+
+	router.Run()
 }
