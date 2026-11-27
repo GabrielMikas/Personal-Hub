@@ -24,7 +24,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           # Anchored to line start so text that merely mentions the rule passes.
-          pattern='^[[:space:]]*co-authored-by:.*(claude|anthropic.com)|^[^[:alnum:]]*generated with [?claude code'
+          pattern='^[[:space:]]*co-authored-by:.*(claude|anthropic\.com)|^[^[:alnum:]]*generated with \[?claude code'
           offending=$(git log --format='%H' "$BASE_SHA..$HEAD_SHA" | while read -r sha; do
             if git log -1 --format='%B' "$sha" | grep -Eiq "$pattern"; then
               echo "$sha $(git log -1 --format='%s' "$sha")"
@@ -43,7 +43,7 @@ jobs:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           # Anchored to line start so text that merely mentions the rule passes.
-          pattern='^[[:space:]]*co-authored-by:.*(claude|anthropic.com)|^[^[:alnum:]]*generated with [?claude code'
+          pattern='^[[:space:]]*co-authored-by:.*(claude|anthropic\.com)|^[^[:alnum:]]*generated with \[?claude code'
           if printf '%s\n%s\n' "$PR_TITLE" "$PR_BODY" | grep -Eiq "$pattern"; then
             echo "::error::The pull request title/description contains Claude/AI attribution. Edit it to remove the attribution."
             exit 1
