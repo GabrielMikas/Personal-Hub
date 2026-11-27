@@ -1,0 +1,538 @@
+openapi: 3.0.3
+info:
+  title: PersonalHub API
+  version: 0.1.0
+  description: |
+    API do backend do PersonalHub (Go + Gin + GORM/Postgres).
+
+    **Formato do JSON:** os corpos de request usam camelCase, mas as respostas
+    serializam os schemas GORM, que não têm tags `json`, então os campos
+    chegam em PascalCase (ex.: `CardId`, `BoughtAtValue`).
+
+    Valores monetários são inteiros sem sinal. Datas seguem RFC 3339 / ISO 8601.
+
+    As rotas de coleção são registradas com barra final (`/hobbies/cards/`).
+    Requisições sem a barra são redirecionadas pelo Gin.
+
+    As rotas `/finance/investments/*` estão registradas no router, mas ainda não
+    têm handlers e por isso não estão documentadas aqui.
+servers:
+  - url: http://localhost:3000
+    description: Desenvolvimento local
+tags:
+  - name: Cards
+    description: Cartas colecionáveis compradas
+  - name: Orders
+    description: Pedidos feitos em lojas
+  - name: Reimbursements
+    description: Pedidos de reembolso, um por pedido (Order)
+
+paths:
+  /hobbies/cards/:
+    get:
+      tags: [Cards]
+      operationId: listCards
+      summary: Lista todas as cartas
+      responses:
+        '200':
+          description: Lista de cartas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [Cards]
+      operationId: createCard
+      summary: Cadastra uma carta
+      description: O `CardId` é gerado pelo servidor (UUID).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCardInput'
+      responses:
+        '201':
+          description: Carta criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /hobbies/cards/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Cards]
+      operationId: getCard
+      summary: Busca uma carta
+      responses:
+        '200':
+          description: Carta encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [Cards]
+      operationId: updateCard
+      summary: Atualiza uma carta
+      description: Atualização parcial — apenas os campos enviados são alterados.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCardInput'
+      responses:
+        '200':
+          description: Carta atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [Cards]
+      operationId: deleteCard
+      summary: Remove uma carta
+      responses:
+        '204':
+          description: Carta removida
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /hobbies/orders/:
+    get:
+      tags: [Orders]
+      operationId: listOrders
+      summary: Lista todos os pedidos
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [Orders]
+      operationId: createOrder
+      summary: Cadastra um pedido
+      description: O `OrderId` é gerado pelo servidor (UUID).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderInput'
+      responses:
+        '201':
+          description: Pedido criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /hobbies/orders/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Orders]
+      operationId: getOrder
+      summary: Busca um pedido
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [Orders]
+      operationId: updateOrder
+      summary: Atualiza um pedido
+      description: Atualização parcial — apenas os campos enviados são alterados.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderInput'
+      responses:
+        '200':
+          description: Pedido atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [Orders]
+      operationId: deleteOrder
+      summary: Remove um pedido
+      responses:
+        '204':
+          description: Pedido removido
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /hobbies/reimbursements/:
+    get:
+      tags: [Reimbursements]
+      operationId: listReimbursements
+      summary: Lista todos os reembolsos
+      responses:
+        '200':
+          description: Lista de reembolsos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reimbursement'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [Reimbursements]
+      operationId: createReimbursement
+      summary: Cadastra um reembolso
+      description: |
+        A chave do reembolso é o `orderId` do pedido a que ele se refere,
+        enviado no corpo (não é gerado pelo servidor).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReimbursementInput'
+      responses:
+        '201':
+          description: Reembolso criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reimbursement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /hobbies/reimbursements/{orderId}:
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: ID do pedido (Order) ao qual o reembolso pertence
+        schema:
+          type: string
+    get:
+      tags: [Reimbursements]
+      operationId: getReimbursement
+      summary: Busca um reembolso
+      responses:
+        '200':
+          description: Reembolso encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reimbursement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      tags: [Reimbursements]
+      operationId: updateReimbursement
+      summary: Atualiza um reembolso
+      description: Atualização parcial — apenas os campos enviados são alterados.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReimbursementInput'
+      responses:
+        '200':
+          description: Reembolso atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reimbursement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [Reimbursements]
+      operationId: deleteReimbursement
+      summary: Remove um reembolso
+      responses:
+        '204':
+          description: Reembolso removido
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: ID do recurso (UUID)
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Corpo da requisição inválido (JSON malformado ou campo obrigatório ausente)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Erro interno
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: card not found
+
+    # ---------- Cards ----------
+    Card:
+      type: object
+      required: [CardId, Name, Code, BoughtAtValue, BoughtAtDate, BinderId]
+      properties:
+        CardId:
+          type: string
+          format: uuid
+        Name:
+          type: string
+        Code:
+          type: string
+        BoughtAtValue:
+          type: integer
+          minimum: 0
+        BoughtAtDate:
+          type: string
+          format: date-time
+        BinderId:
+          type: string
+          nullable: true
+    CreateCardInput:
+      type: object
+      required: [name, code, boughtAtValue, boughtAtDate]
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        boughtAtValue:
+          type: integer
+          minimum: 1
+          description: Obrigatório e diferente de zero (`binding:"required"`)
+        boughtAtDate:
+          type: string
+          format: date-time
+        binderId:
+          type: string
+          nullable: true
+    UpdateCardInput:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        boughtAtValue:
+          type: integer
+          minimum: 0
+        boughtAtDate:
+          type: string
+          format: date-time
+        binderId:
+          type: string
+
+    # ---------- Orders ----------
+    Order:
+      type: object
+      required: [OrderId, Store, StoreOrderId, OrderedAt, OrderValue, DeliveryStatus]
+      properties:
+        OrderId:
+          type: string
+          format: uuid
+        Store:
+          type: string
+        StoreOrderId:
+          type: string
+        OrderedAt:
+          type: string
+          format: date-time
+        OrderValue:
+          type: integer
+          minimum: 0
+        DeliveryStatus:
+          type: string
+    CreateOrderInput:
+      type: object
+      required: [store, storeOrderId, orderedAt, orderValue, deliveryStatus]
+      properties:
+        store:
+          type: string
+        storeOrderId:
+          type: string
+        orderedAt:
+          type: string
+          format: date-time
+        orderValue:
+          type: integer
+          minimum: 1
+          description: Obrigatório e diferente de zero (`binding:"required"`)
+        deliveryStatus:
+          type: string
+    UpdateOrderInput:
+      type: object
+      properties:
+        store:
+          type: string
+        storeOrderId:
+          type: string
+        orderedAt:
+          type: string
+          format: date-time
+        orderValue:
+          type: integer
+          minimum: 0
+        deliveryStatus:
+          type: string
+
+    # ---------- Reimbursements ----------
+    Reimbursement:
+      type: object
+      required:
+        - OrderId
+        - StoreName
+        - StoreContactInfo
+        - StoreOrderId
+        - RequestedAt
+        - ReimbursementValue
+        - ReimbursementStatus
+      properties:
+        OrderId:
+          type: string
+        StoreName:
+          type: string
+        StoreContactInfo:
+          type: string
+        StoreOrderId:
+          type: string
+        RequestedAt:
+          type: string
+          format: date-time
+        ReimbursementValue:
+          type: integer
+          minimum: 0
+        ReimbursementStatus:
+          type: string
+    CreateReimbursementInput:
+      type: object
+      required:
+        - orderId
+        - storeName
+        - storeContactInfo
+        - storeOrderId
+        - requestedAt
+        - reimbursementValue
+        - reimbursementStatus
+      properties:
+        orderId:
+          type: string
+          description: ID do pedido (Order) ao qual o reembolso pertence
+        storeName:
+          type: string
+        storeContactInfo:
+          type: string
+        storeOrderId:
+          type: string
+        requestedAt:
+          type: string
+          format: date-time
+        reimbursementValue:
+          type: integer
+          minimum: 1
+          description: Obrigatório e diferente de zero (`binding:"required"`)
+        reimbursementStatus:
+          type: string
+    UpdateReimbursementInput:
+      type: object
+      properties:
+        storeName:
+          type: string
+        storeContactInfo:
+          type: string
+        storeOrderId:
+          type: string
+        requestedAt:
+          type: string
+          format: date-time
+        reimbursementValue:
+          type: integer
+          minimum: 0
+        reimbursementStatus:
+          type: string
