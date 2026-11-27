@@ -86,5 +86,5 @@ Os testes não precisam de Postgres nem de Docker: commands, repositories e cont
 
 - **Branches:** `<tipo>/<descricao>`, ex.: `feat/hobbies-binders` (veja [`.claude/rules/branch-naming.md`](.claude/rules/branch-naming.md)).
 - **Commits:** [Conventional Commits](https://www.conventionalcommits.org/pt-br/v1.0.0/), ex.: `feat(hobbies): add binder endpoints` (veja [`.claude/rules/conventional-commits.md`](.claude/rules/conventional-commits.md)).
-- **Testes:** backend com cobertura mínima de 90% (veja [`.claude/rules/backend-testing.md`](.claude/rules/backend-testing.md)).
+- **Testes:** backend com cobertura mínima de 90%, verificada no CI (`.github/workflows/backend.yml`); PRs só podem ser mergeados com o check verde (veja [`.claude/rules/backend-testing.md`](.claude/rules/backend-testing.md)).
 - **API:** toda mudança de rota, request ou response deve atualizar o `openapi.yaml`.
