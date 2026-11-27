@@ -80,6 +80,8 @@ moon run personal-hub-back:test
 
 A meta de cobertura é de pelo menos **90%**.
 
+Os testes não precisam de Postgres nem de Docker: commands, repositories e controllers usam um SQLite em memória (`src/internal/testdb`), e a brapi é simulada com `httptest.Server`. O `go.mod` fixa o toolchain em `go1.25.14` porque o `go1.25.0` não tem a ferramenta `covdata` e falha ao gerar cobertura.
+
 ## Contribuindo
 
 - **Branches:** `<tipo>/<descricao>`, ex.: `feat/hobbies-binders` (veja [`.claude/rules/branch-naming.md`](.claude/rules/branch-naming.md)).
