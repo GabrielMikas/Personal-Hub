@@ -4,9 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Run() {
+// New builds the HTTP engine with every route registered.
+func New() *gin.Engine {
 	g := gin.Default()
-
 	serveRoutes(g)
-	g.Run(":3000")
+	return g
+}
+
+func Run() {
+	New().Run(":3000")
 }
