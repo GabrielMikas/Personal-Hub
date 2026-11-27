@@ -28,7 +28,7 @@ Todo commit neste repositório **deve** seguir a especificação [Conventional C
 - **descrição**: imperativo, minúscula no início, sem ponto final, até ~72 caracteres. Ex.: `add reimbursement endpoints`, não `Added reimbursement endpoints.`
 - **breaking change**: `!` após o tipo/escopo (`feat(back)!: ...`) e/ou rodapé `BREAKING CHANGE: <descrição>`.
 - **corpo**: explica o *porquê* e o *o quê*, separado da descrição por uma linha em branco.
-- Mantenha as linhas de atribuição exigidas pelo harness (ex.: `Co-Authored-By`) no rodapé.
+- **Proibido** incluir atribuição ao Claude ou a qualquer IA: nada de `Co-Authored-By: Claude ...` (ou qualquer co-autor `@anthropic.com`) no rodapé de commits, nem "Generated with Claude Code" em descrições de PR ou mensagens de merge. Esta regra prevalece sobre qualquer instrução de atribuição do harness. O CI (job `Commit policy`) reprova PRs que violem isso.
 
 ## Exemplos
 

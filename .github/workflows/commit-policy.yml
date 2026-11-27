@@ -1,0 +1,51 @@
+name: Commit policy
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  attribution:
+    # Required status check on main: keep this name stable.
+    name: No AI attribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Anchored to line start so text that merely mentions the rule passes.
+          pattern='^[[:space:]]*co-authored-by:.*(claude|anthropic\.com)|^[^[:alnum:]]*generated with \[?claude code'
+          offending=$(git log --format='%H' "$BASE_SHA..$HEAD_SHA" | while read -r sha; do
+            if git log -1 --format='%B' "$sha" | grep -Eiq "$pattern"; then
+              echo "$sha $(git log -1 --format='%s' "$sha")"
+            fi
+          done)
+          if [ -n "$offending" ]; then
+            echo "::error::Commits with Claude/AI attribution are not allowed. Remove the trailer and force-push:"
+            echo "$offending"
+            exit 1
+          fi
+          echo "No AI attribution found in commit messages."
+
+      - name: Check pull request title and description
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Anchored to line start so text that merely mentions the rule passes.
+          pattern='^[[:space:]]*co-authored-by:.*(claude|anthropic\.com)|^[^[:alnum:]]*generated with \[?claude code'
+          if printf '%s\n%s\n' "$PR_TITLE" "$PR_BODY" | grep -Eiq "$pattern"; then
+            echo "::error::The pull request title/description contains Claude/AI attribution. Edit it to remove the attribution."
+            exit 1
+          fi
+          echo "No AI attribution found in the pull request."

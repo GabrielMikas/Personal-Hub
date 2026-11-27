@@ -18,6 +18,7 @@ Contexto que deve sobreviver entre sessões do Claude. Lido no início de toda s
 - 2026-11-26 — Frontend será um app desktop Electron + React + Vite + TypeScript.
 - 2026-11-26 — Testes do backend usam SQLite em memória (`src/internal/testdb`, driver puro Go, sem CGO/Docker); falhas de escrita são simuladas com `testdb.FailWrites`.
 - 2026-11-27 — Repositório tornado público. `main` protegida: exige o check `Backend tests and coverage` (workflow `.github/workflows/backend.yml`) com branch atualizada, vale também para admins, sem force push nem deleção. Sem exigência de review.
+- 2026-11-27 — Proibida atribuição ao Claude/IA em commits, PRs e merges (`.claude/rules/conventional-commits.md`, `.claude/settings.json` com `attribution` vazio). O workflow `commit-policy.yml` (job `No AI attribution`) reprova PRs que violem.
 - 2026-11-26 — Token da brapi fica em `apps/personal-hub-back/.env` (`BRAPI_KEY`), nunca no código.
 
 ## Pendências
