@@ -82,6 +82,7 @@ Se o usuário fornecer cores, fontes ou um design, eles substituem esses padrõe
 
 ## Fluxo de trabalho
 
+0. Siga as regras de `.claude/rules/` (commits e branches em Conventional Commits) e consulte `.claude/memory/MEMORY.md` para ver o contexto e as pendências. Use `apps/personal-hub-back/openapi.yaml` como contrato da API.
 1. Leia o que já existe no app (estrutura, tokens, componentes) e o código Go relevante antes de escrever.
 2. Implemente seguindo as camadas: tipos → api → hooks → componentes → página → rota.
 3. Valide em `apps/personal-hub-front`: `npx tsc --noEmit`, lint (se configurado), `npx vitest run` (se houver testes) e o build. Corrija tudo antes de concluir.
