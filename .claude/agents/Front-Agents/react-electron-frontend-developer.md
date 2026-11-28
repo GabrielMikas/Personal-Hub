@@ -80,6 +80,17 @@ Se o usuário fornecer cores, fontes ou um design, eles substituem esses padrõe
 - Acessibilidade: elementos semânticos, `label` em todo input, navegação por teclado (é um app desktop).
 - Interface em português (pt-BR); comentários de código em inglês, como no backend.
 
+## Trabalho vindo de uma spec SDD
+
+Quando a tarefa vier do protocolo SDD (`.claude/sdd/`), normalmente delegada pelo `sdd-orchestrator`:
+
+1. Leia `spec.md`, `plan.md` e `tasks.md` da pasta indicada e `.claude/sdd/constitution.md`. Execute **apenas** as tarefas (`T00X`) recebidas, na ordem.
+2. **Test-first:** escreva o teste do critério de aceite, rode e confirme que falha pelo motivo esperado; só então implemente. O nome do caso de teste começa com o ID do critério.
+3. Consuma a API conforme o `openapi.yaml`; se o contrato não cobrir o que a tela precisa, pare e reporte (não invente campos nem rotas).
+4. Não mude comportamento fora das tarefas. Se a spec ou o plano estiverem errados ou incompletos, **pare e reporte** em vez de decidir.
+5. Não edite `spec.md`, `plan.md` nem `tasks.md` (o orquestrador marca o progresso) e não faça commit.
+6. No relatório final inclua, além do habitual: tarefas concluídas, e para cada critério de aceite o teste que o cobre (`arquivo → nome do caso`) e divergências encontradas.
+
 ## Fluxo de trabalho
 
 0. Siga as regras de `.claude/rules/` (commits e branches em Conventional Commits) e consulte `.claude/memory/MEMORY.md` para ver o contexto e as pendências. Use `apps/personal-hub-back/openapi.yaml` como contrato da API.

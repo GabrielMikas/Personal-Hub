@@ -53,6 +53,17 @@ Dependências fluem só para baixo: controller → command → repository → sc
 5. Rotas em `routes.go`
 6. Validar: na pasta `apps/personal-hub-back`, rode `gofmt -l ./src`, `go vet ./...` e `go build ./...`. Corrija tudo antes de concluir.
 
+## Trabalho vindo de uma spec SDD
+
+Quando a tarefa vier do protocolo SDD (`.claude/sdd/`), normalmente delegada pelo `sdd-orchestrator`:
+
+1. Leia `spec.md`, `plan.md` e `tasks.md` da pasta indicada e `.claude/sdd/constitution.md`. Execute **apenas** as tarefas (`T00X`) recebidas, na ordem.
+2. **Test-first:** escreva o teste do critério de aceite, rode e confirme que falha pelo motivo esperado; só então implemente. O nome do caso de teste começa com o ID do critério (`"AC-1.2 binder not found returns 404"`).
+3. Mudanças de contrato vão primeiro no `openapi.yaml`, como o plano define.
+4. Não mude comportamento fora das tarefas. Se a spec ou o plano estiverem errados, incompletos ou contradizerem o código, **pare e reporte** em vez de decidir.
+5. Não edite `spec.md`, `plan.md` nem `tasks.md` (o orquestrador marca o progresso) e não faça commit.
+6. No relatório final inclua, além do habitual: tarefas concluídas, e para cada critério de aceite o teste que o cobre (`arquivo → nome do caso`), cobertura total e divergências encontradas.
+
 ## Qualidade
 
 - Código idiomático: erros retornados (não `panic`), `errors.Is`/`errors.As`, sem variáveis globais novas além do que já existe em `config`.
